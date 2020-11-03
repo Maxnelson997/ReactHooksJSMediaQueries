@@ -1,13 +1,8 @@
 import useBreakpoint from './components/breakpoint/useBreakpoint';
-import React, { useState, useEffect } from 'react';
-const queries = {
-  xs: '(max-width: 320px)',
-  md: '(max-width: 720px)',
-  lg: '(max-width: 1024px)'
-}
+import React  from 'react';
 
 const Use = () => {
-  const matchPoints = useBreakpoint(queries);
+  const matchPoints = useBreakpoint();
   console.log(
       'MATCH POINTS',
       matchPoints
@@ -23,8 +18,8 @@ const Use = () => {
               : '',
               jsx
           }
-      </ul>
-  )
+      </ul> 
+      )
 }
 
 export default Use;

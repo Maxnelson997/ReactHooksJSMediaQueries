@@ -1,57 +1,46 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
-const useBreakpoint = (queries) => {
+const queries = {
+    xs: '(min-width: 320px)',
+    md: '(min-width: 720px)',
+    lg: '(min-width: 1024px)',
+    xl: '(min-width: 1280px)'
+}
+
+const useBreakpoint = () => {
     const [queryMatch, setQueryMatch] = useState(null);
-  
-    useEffect(() => {
-      const mediaQueryLists = {};
-      const keys = Object.keys(queries);
-      
-      // To check whether event listener is attached or not
-      let isAttached = false;
-  
-      const handleQueryListener = () => {
-        const updatedMatches = keys.reduce((acc, media) => {
-          acc[media] = !!(mediaQueryLists[media] && mediaQueryLists[media].matches);
-          return acc;
-        }, {})
-        //Setting state to the updated matches 
-        // when document either starts or stops matching a query
-        setQueryMatch(updatedMatches)
-      }
-  
-      if (window && window.matchMedia) {
-        const matches = {};
-        keys.forEach(media => {
-          if (typeof queries[media] === 'string') {
-            mediaQueryLists[media] = window.matchMedia(queries[media]);
-            matches[media] = mediaQueryLists[media].matches
-          } else {
-            matches[media] = false
-          }
-        });
-        //Setting state to initial matching queries
-        setQueryMatch(matches);
-        isAttached = true;
-        keys.forEach(media => {
-          if(typeof queries[media] === 'string') {
-            mediaQueryLists[media].addListener(handleQueryListener);
-          }
-        });
-      }
-  
-      return () => {
-      //If event listener is attached then remove it when deps change
-        if(isAttached) {
-          keys.forEach(media => {
-            if(typeof queries[media] === 'string') {
-              mediaQueryLists[media].removeListener(handleQueryListener);
-            }
-          });
+
+    useEffect(() => {   
+        const mediaQueryLists = {};
+        const keys = Object.keys(queries);
+    
+        // this function takes the keys and assigns a boolean value based on if it's within the window size with window.matchMedia.matches
+        const handleQueryListener = () => {
+            const updatedMatches = keys.reduce((updatedMatches, nextSizeKey) => {
+                let currentQuery = mediaQueryLists[nextSizeKey]
+                let sizeMatches = currentQuery.matches;
+                updatedMatches[nextSizeKey] = sizeMatches;
+                return updatedMatches;
+            }, {});
+            setQueryMatch(updatedMatches);
         }
+    
+        // gets initial value of matches on page load -- also sets up media query lists for use everywhere else.
+        const initialLoadMatches = keys.reduce((updatedMatches, nextSizeKey) => {
+            mediaQueryLists[nextSizeKey] = window.matchMedia(queries[nextSizeKey])
+            mediaQueryLists[nextSizeKey].addListener(handleQueryListener);
+            updatedMatches[nextSizeKey] = mediaQueryLists[nextSizeKey].matches
+            return updatedMatches
+        }, {});
+        setQueryMatch(initialLoadMatches);
+      return () => {
+          keys.forEach(media => {
+              mediaQueryLists[media].removeListener(handleQueryListener);
+          });
       }
     }, [queries]);
-  
+   
+    // return the useState value to give this whole hook to be used in another component.
     return queryMatch;
   }
   
