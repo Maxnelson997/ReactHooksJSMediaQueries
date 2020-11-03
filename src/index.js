@@ -4,9 +4,11 @@ import './style/main.scss';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import Use from './use';
+
 ReactDOM.render(
     <Layout>
-        <h1>content here.</h1>
+        <Use/>
     </Layout>,
     document.getElementById('layout-wrapper')
 )

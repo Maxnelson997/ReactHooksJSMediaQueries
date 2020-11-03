@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from 'react';
+
 const useBreakpoint = (queries) => {
     const [queryMatch, setQueryMatch] = useState(null);
   
