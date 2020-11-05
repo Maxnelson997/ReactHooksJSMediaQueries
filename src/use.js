@@ -2,23 +2,16 @@ import useBreakpoint from './components/breakpoint/useBreakpoint';
 import React  from 'react';
 
 const Use = () => {
-  const matchPoints = useBreakpoint();
-  console.log(
-      'MATCH POINTS',
-      matchPoints
-  )
-  let jsx = []
+  const breakpoints = useBreakpoint();
+
   return (
-      <ul>
-          {
-              matchPoints ?
-              Object.keys(matchPoints).forEach(key => {
-                jsx.push(<li key={Math.random()}>{key}: {String(matchPoints[key])}</li>)
-              })
-              : '',
-              jsx
-          }
-      </ul> 
+      <div>
+            {
+                 Object.keys(breakpoints).map(sizeKey => (
+                    <div key={sizeKey}>{sizeKey}:{breakpoints[sizeKey] ? 'true' : 'false'}</div>        
+                ))
+            }
+      </div> 
       )
 }
 
